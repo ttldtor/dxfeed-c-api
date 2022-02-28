@@ -1,6 +1,6 @@
 ; The following line has the only difference between release and debug versions of DXFeed lib
 LIBRARY DXFeed_64
-VERSION 8.5
+VERSION 8.6
 EXPORTS
     dxf_create_connection
     dxf_create_connection_auth_basic
@@ -48,6 +48,9 @@ EXPORTS
     dxf_close_price_level_book
     dxf_attach_price_level_book_listener
     dxf_detach_price_level_book_listener
+    dxf_create_price_level_book_v3
+    dxf_close_price_level_book_v2
+    dxf_set_price_level_book_listeners_v2
     dxf_create_regional_book
     dxf_close_regional_book
     dxf_attach_regional_book_listener

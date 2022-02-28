@@ -1,6 +1,6 @@
 /*
  * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
+ * 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/
  *
@@ -91,7 +91,7 @@ int snapshot_test_runner(dxf_order_t* events, size_t size, dxf_snapshot_listener
 		return false;
 	}
 
-	dx_clear_order_source(subscription);
+	dx_clear_order_sources(subscription);
 	dx_add_order_source(subscription, SOURCE_DEFAULT);
 
 	dxf_snapshot_t snapshot = dx_create_snapshot(connection, subscription, dx_eid_order, dx_rid_order, symbol,

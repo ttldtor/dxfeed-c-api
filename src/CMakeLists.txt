@@ -98,12 +98,15 @@ set(HEADER_FILES
         Logger.h
         ObjectArray.h
         PriceLevelBook.h
+        PriceLevelBookNG.h
+        PriceLevelBookNG.hpp
         RegionalBook.h
         PrimitiveTypes.h
         resource.h
         RecordTranscoder.h
         ServerMessageProcessor.h
         Snapshot.h
+        StringConverter.hpp
         TaskQueue.h
         TimeMarkUtil.hpp
         Version.h
@@ -160,6 +163,7 @@ set(SOURCE_FILES
         Logger.c
         ObjectArray.c
         PriceLevelBook.c
+        PriceLevelBookNG.cpp
         RegionalBook.c
         RecordTranscoder.c
         ServerMessageProcessor.c

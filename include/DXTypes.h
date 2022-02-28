@@ -1,6 +1,6 @@
 /*
  * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
+ * 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/
  *
@@ -79,6 +79,7 @@ typedef void* dxf_snapshot_t;
 
 /// Price level book
 typedef void* dxf_price_level_book_t;
+typedef void* dxf_price_level_book_v2_t;
 
 /// Regional book
 typedef void* dxf_regional_book_t;

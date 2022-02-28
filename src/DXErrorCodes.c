@@ -1,6 +1,6 @@
 /*
  * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
+ * 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/
  *
@@ -187,6 +187,11 @@ dxf_const_string_t dx_get_error_description (dx_error_code_t code) {
 	case dx_cfgec_empty_config_string: return L"Empty config string";
 	case dx_cfgec_empty_config_file_name: return L"Empty config file name";
 	case dx_cfgec_toml_parser_error: return L"TOML parser error";
+
+	case dx_plbec_invalid_symbol: return L"PLB: invalid symbol parameter";
+	case dx_plbec_invalid_source: return L"PLB: invalid source parameter";
+	case dx_plbec_invalid_book_ptr: return L"PLB: invalid book pointer parameter";
+	case dx_plbec_invalid_book_handle: return L"PLB: invalid book handle";
 
 	/* miscellaneous error codes */
 

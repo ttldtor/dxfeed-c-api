@@ -1,6 +1,6 @@
 /*
  * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
+ * 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/
  *
@@ -274,7 +274,7 @@ typedef enum dxf_order_scope_t {
 } dxf_order_scope_t;
 
 /// The length of record suffix including the terminating null character
-#define DXF_RECORD_SUFFIX_SIZE 5
+#define DXF_RECORD_SUFFIX_SIZE (16 + 1)
 
 /// Side of an order or a trade.
 typedef enum dxf_order_side_t {
@@ -446,10 +446,10 @@ typedef struct dxf_trade_t {
 	dxf_double_t day_turnover;
 	/**
 	 * This field contains several individual flags encoded as an integer number the following way:
-	 *
-	 * |31...4|  3 |  2 |  1 |  0 |
-	 * |------|----|----|----|----|
-	 * |      |  Direction |||ETH |
+     * <table>
+     * <tr><th>31...4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr>
+     * <tr><td></td><td colspan="3">Direction</td><td>ETH</td></tr>
+     * </table>
 	 *
 	 * 1. Tick Direction (#dxf_direction_t)
 	 * 2. ETH (extendedTradingHours) - flag that determines current trading session: extended or regular (0 - regular
@@ -564,10 +564,10 @@ typedef struct dxf_summary {
 	dxf_double_t open_interest;
 	/**
 	 * This field contains several individual flags encoded as an integer number the following way:
-	 *
-	 * |31...4|  3 |  2 |  1 |  0  |
-	 * |------|----|----|----|-----|
-	 * |      |  Close ||PrevClose||
+     * <table>
+     * <tr><th>31...4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr>
+     * <tr><td></td><td colspan="2">Close</td><td colspan="2">PrevClose</td></tr>
+     * </table>
 	 *
 	 * 1. Close (dayClosePriceType) - parameter that shows if the closing price is final #dxf_price_type_t
 	 * 2. PrevClose (prevDayClosePriceType) - parameter that shows if the closing price of the previous day is final
@@ -650,10 +650,10 @@ typedef struct dxf_profile {
 	dxf_long_t halt_end_time;
 	/**
 	 * This field contains several individual flags encoded as an integer number the following way:
-	 *
-	 * |31...4|  3 |  2 |  1 |  0 |
-	 * |------|----|----|----|----|
-	 * |      |   SSR  || Status ||
+	 * <table>
+	 * <tr><th>31...4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr>
+	 * <tr><td></td><td colspan="2">SSR</td><td colspan="2">Status</td></tr>
+	 * </table>
 	 *
 	 * 1. SSR (shortSaleRestriction) - special mode of protection against "shorting the market", this field
 	 *    is optional. #dxf_short_sale_restriction_t
@@ -709,10 +709,10 @@ typedef struct dxf_time_and_sale {
 	dxf_const_string_t exchange_sale_conditions;
 	/**
 	 * This field contains several individual flags encoded as an integer number the following way:
-	 *
-	 * |31...16|15...8|  7 |  6 |  5 |  4 |  3 |  2 |  1 |  0 |
-	 * |-------|------|----|----|----|----|----|----|----|----|
-	 * |       |TTE   |    |   Side || SL | ETH| VT |  Type  ||
+     * <table>
+     * <tr><th>31...16</th><th>15...8</th><th>7</th><th>6</th><th>5</th><th>4</th><th>3</th><th>2</th><th>1</th><th>0</th></tr>
+     * <tr><td></td><td>TTE</td><td></td><td colspan="2">Side</td><td>SL</td><td>ETH</td><td>VT</td><td colspan="2">Type</td></tr>
+     * </table>
 	 *
 	 * 1. TradeThroughExempt (TTE) - is a transaction concluded by exempting from compliance with some rule. The value
 	 *    is encoded by the letter.
@@ -1358,14 +1358,14 @@ typedef struct dx_event_subscription_param_list {
  * @brief Returns the list of subscription params. Fills records list according to event_id.
  *
  * @param[in]  connection    Connection handle
- * @param[in]  order_source  Order source
+ * @param[in]  order_sources Order sources
  * @param[in]  event_id      Event id
  * @param[in]  subscr_flags  Subscription flags
  * @param[out] params        Subscription params
  *
  * @warning You need to call dx_free(params.elements) to free resources.
  */
-size_t dx_get_event_subscription_params(dxf_connection_t connection, dx_order_source_array_ptr_t order_source,
+size_t dx_get_event_subscription_params(dxf_connection_t connection, dx_order_source_array_ptr_t order_sources,
 										dx_event_id_t event_id, dx_event_subscr_flag subscr_flags,
 										OUT dx_event_subscription_param_list_t* params);
 
@@ -1436,6 +1436,8 @@ typedef struct dxf_price_level_book_data {
 	const dxf_price_level_element_t* asks;
 } dxf_price_level_book_data_t, *dxf_price_level_book_data_ptr_t;
 
+typedef const dxf_price_level_book_data_t* dxf_price_level_book_const_data_ptr_t;
+
 /**
  * @ingroup c-api-price-level-book
  *
@@ -1449,6 +1451,29 @@ typedef struct dxf_price_level_book_data {
  *  @param[in] user_data Pointer to user struct, use NULL by default
  */
 typedef void (*dxf_price_level_book_listener_t)(const dxf_price_level_book_data_ptr_t book, void* user_data);
+
+/**
+ * @ingroup c-api-price-level-book
+ *
+ * @brief Incremental Price Level listener prototype
+ *
+ * @details It is recommended to process incremental changes in the following order: removals, additions, updates.
+ * This is also because updates may apply to added price levels.
+ *
+ *  @param[in] removals  Pointer to the incremental data to be removed from the PLB. The bids and asks are sorted by
+ *                       price, best bid (with largest price) and best ask (with smallest price) are first elements of
+ *                       corresponding arrays.
+ *  @param[in] additions Pointer to the incremental data to be added to the PLB. The bids and asks are sorted by price,
+ *                       best bid (with largest price) and best ask (with smallest price) are first elements of
+ *                       corresponding arrays.
+ *  @param[in] updates   Pointer to the incremental data to be updated in the PLB. The bids and asks are sorted by
+ *                       price, best bid (with largest price) and best ask (with smallest price) are first elements of
+ *                       corresponding arrays.
+ *  @param[in] user_data Pointer to user struct, use NULL by default
+ */
+typedef void (*dxf_price_level_book_inc_listener_t)(dxf_price_level_book_const_data_ptr_t removals,
+													dxf_price_level_book_const_data_ptr_t additions,
+													dxf_price_level_book_const_data_ptr_t updates, void* user_data);
 
 /**
  * @ingroup c-api-regional-book

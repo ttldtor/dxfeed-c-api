@@ -1,6 +1,6 @@
 /*
  * The contents of this file are subject to the Mozilla Public License Version
- * 1.1 (the "License"); you may not use this file except in compliance with
+ * 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
  * http://www.mozilla.org/MPL/
  *
@@ -471,7 +471,7 @@ static dx_plb_source_t *dx_plb_source_create(dxf_connection_t connection, dxf_co
 	}
 
 	/* Set source */
-	dx_clear_order_source(source->subscription);
+	dx_clear_order_sources(source->subscription);
 	if (!dx_add_order_source(source->subscription, source->source)) {
 		dx_plb_source_free(source);
 		return NULL;
@@ -484,10 +484,10 @@ static dx_plb_source_t *dx_plb_source_create(dxf_connection_t connection, dxf_co
 	}
 
 	/* And make all these motions */
-	if (!dx_load_events_for_subscription(connection, dx_get_order_source(source->subscription), DXF_ET_ORDER,
+	if (!dx_load_events_for_subscription(connection, dx_get_order_sources(source->subscription), DXF_ET_ORDER,
 										 subscription_flags) ||
 		!dx_send_record_description(connection, false) ||
-		!dx_subscribe_symbols_to_events(connection, dx_get_order_source(source->subscription), &symbol, 1, NULL, 0,
+		!dx_subscribe_symbols_to_events(connection, dx_get_order_sources(source->subscription), &symbol, 1, NULL, 0,
 										DXF_ET_ORDER, false, false, subscription_flags, 0)) {
 		dx_plb_source_free(source);
 		return NULL;
