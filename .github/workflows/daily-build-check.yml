@@ -106,6 +106,8 @@ jobs:
     name: build windows (TLS)
     steps:
       - uses: actions/checkout@master
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
       - name: Set env
         run: |
           echo RELEASE_VERSION=$("$Env:BUILD_VERSION") | Add-Content -Path $env:GITHUB_ENV -Encoding utf8

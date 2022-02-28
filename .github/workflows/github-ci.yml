@@ -215,6 +215,8 @@ jobs:
     name: build windows (TLS)
     steps:
       - uses: actions/checkout@master
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
       - name: Set env
         run: |
           echo RELEASE_VERSION=$("$Env:GITHUB_REF".Substring(10)) | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
@@ -243,6 +245,8 @@ jobs:
     name: build windows (no TLS)
     steps:
       - uses: actions/checkout@master
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
       - name: Set env
         run: |
           echo RELEASE_VERSION=$("$Env:GITHUB_REF".Substring(10)) | Add-Content -Path $env:GITHUB_ENV -Encoding utf8
